@@ -265,40 +265,67 @@ public class EnglishCheckers {
         int[][] simpleMoves = getAllBasicMoves(board,player);
         int[][] complexMoves = getAllBasicJumps(board, player);
 
-        if (simpleMoves.length > 0 && complexMoves.length > 0)
-            if(Math.random() > 0.5) {
-                int random = new Random().nextInt(simpleMoves.length);
-                playMove(board,player,simpleMoves[random][0],simpleMoves[random][1],simpleMoves[random][2],simpleMoves[random][3]);
-            }else{
-                int random = new Random().nextInt(complexMoves.length);
-                int fromRow = complexMoves[random][0], fromCol = complexMoves[random][1];
-                while(getRestrictedBasicJumps(board,player,fromRow,fromCol).length > 0) {
-                    playMove(board, player, complexMoves[random][0], complexMoves[random][1], complexMoves[random][2], complexMoves[random][3]);
-                    fromRow = complexMoves[random][0];
-                    fromCol = complexMoves[random][1];
-                }
-            }
-        else if(simpleMoves.length > 0) {
-            int random = new Random().nextInt(simpleMoves.length);
-            playMove(board, player, simpleMoves[random][0], simpleMoves[random][1], simpleMoves[random][2], simpleMoves[random][3]);
-        }else{
-            int random = new Random().nextInt(complexMoves.length);
-            int fromRow = complexMoves[random][0], fromCol = complexMoves[random][1];
-            while(getRestrictedBasicJumps(board,player,fromRow,fromCol).length > 0) {
-                playMove(board, player, complexMoves[random][0], complexMoves[random][1], complexMoves[random][2], complexMoves[random][3]);
-                fromRow = complexMoves[random][0];
-                fromCol = complexMoves[random][1];
-            }
-        }
-
+        if (complexMoves.length > 0){
+			int random = new Random().nextInt(complexMoves.length);
+			int fromRow = complexMoves[random][0], fromCol = complexMoves[random][1];
+			while(getRestrictedBasicJumps(board,player,fromRow,fromCol).length > 0) {
+				playMove(board, player, complexMoves[random][0], complexMoves[random][1], complexMoves[random][2], complexMoves[random][3]);
+				fromRow = complexMoves[random][0];
+				fromCol = complexMoves[random][1];
+			}
+		}
+        else{
+			int random = new Random().nextInt(simpleMoves.length);
+			playMove(board,player,simpleMoves[random][0],simpleMoves[random][1],simpleMoves[random][2],simpleMoves[random][3]);
+		}
 		return board;
 	}
 
 
 	public static int[][] defensivePlayer(int[][] board, int player) {
+		if(!hasValidMoves(board, player))
+			return board;
 
-		//Add your code here
+		int[][] simpleMoves = getAllBasicMoves(board,player);
+		int[][] complexMoves = getAllBasicJumps(board, player);
 
+		if (complexMoves.length > 0){
+			int random = new Random().nextInt(complexMoves.length);
+			int fromRow = complexMoves[random][0], fromCol = complexMoves[random][1];
+			while(getRestrictedBasicJumps(board,player,fromRow,fromCol).length > 0) {
+				playMove(board, player, complexMoves[random][0], complexMoves[random][1], complexMoves[random][2], complexMoves[random][3]);
+				fromRow = complexMoves[random][0];
+				fromCol = complexMoves[random][1];
+			}
+		}
+		else{
+			ArrayList<int[]> listDefensiveMoves = new ArrayList<>();
+			ArrayList<int[]> listOffensiveMoves = new ArrayList<>();
+			for (int i = 0; i < simpleMoves.length; i++) {
+				int[][] copyBoard = new int[SIZE][SIZE];
+				for(int j=0; j<board.length; j++)
+					for(int k=0; k<board[j].length; k++)
+						copyBoard[j][k]=board[j][k];
+				copyBoard = playMove(copyBoard, player, simpleMoves[i][0], simpleMoves[i][1], simpleMoves[i][2], simpleMoves[i][3]);
+				if (!canJump(copyBoard, -player))
+					listDefensiveMoves.add(new int[]{simpleMoves[i][0], simpleMoves[i][1], simpleMoves[i][2], simpleMoves[i][3]});
+				else
+					listOffensiveMoves.add(new int[]{simpleMoves[i][0], simpleMoves[i][1], simpleMoves[i][2], simpleMoves[i][3]});
+			}
+			int[][] defensiveMoves = new int[listDefensiveMoves.size()][4];
+			defensiveMoves = listDefensiveMoves.toArray(defensiveMoves);
+			int[][] offensiveMoves = new int[listOffensiveMoves.size()][4];
+			offensiveMoves = listOffensiveMoves.toArray(offensiveMoves);
+
+			if(defensiveMoves.length > 0){
+				int random = new Random().nextInt(defensiveMoves.length);
+				playMove(board,player,defensiveMoves[random][0],defensiveMoves[random][1],defensiveMoves[random][2],defensiveMoves[random][3]);
+			}else{
+				int random = new Random().nextInt(offensiveMoves.length);
+				playMove(board,player,offensiveMoves[random][0],offensiveMoves[random][1],offensiveMoves[random][2],offensiveMoves[random][3]);
+			}
+
+		}
 		return board;
 	}
 
