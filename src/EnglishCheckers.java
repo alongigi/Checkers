@@ -207,8 +207,10 @@ public class EnglishCheckers {
             return false;
         if(board[toRow][toCol] != 0)
             return false;
-        if(!(isBasicJumpValid(board, player, fromRow, fromCol, toRow, toCol) || (isBasicMoveValid(board, player, fromRow, fromCol, toRow, toCol) && !canJump(board, player))))
-            return false;
+        if(isBasicMoveValid(board, player, fromRow, fromCol, toRow, toCol) && canJump(board, player))
+        	return false;
+        if(!(isBasicMoveValid(board, player, fromRow, fromCol, toRow, toCol) || isBasicJumpValid(board, player, fromRow, fromCol, toRow, toCol)))
+        	return false;
         return true;
 	}
 
@@ -241,11 +243,17 @@ public class EnglishCheckers {
 
 
 	public static int findTheLeader(int[][] board) {
-		int players1 = countPlayers(board, 1), players2 = countPlayers(board, -1);
-        if(players1 > players2)
-            return 1;
-        if(players2 > players1)
-            return -1;
+		int players1 = 0, players2 = 0;
+		for(int i = 0; i < SIZE; i++){
+			for(int j = 0; j < SIZE; j++){
+				if(board[i][j] == 1) players1++;
+				else if(board[i][j] == -1) players2++;
+				else if(board[i][j] == 2) players1=players1+2;
+				else if(board[i][j] == -2) players2=players2+2;
+			}
+		}
+        if(players1 > players2) return 1;
+        if(players2 > players1) return -1;
         return 0;
 	}
 
