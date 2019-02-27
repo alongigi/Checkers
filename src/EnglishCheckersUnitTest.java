@@ -359,4 +359,53 @@ public class EnglishCheckersUnitTest {
         newBoard = EnglishCheckers.defensivePlayer(board, 1);
         assertArrayEquals(newBoard, boardPlayMove);
     }
+
+    @Test
+    public void sidesPlayerTest() {
+        int[][] board = new int[][]{
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,-1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0}};
+
+        int[][] boardPlayMove = new int[][]{
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,-1,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0}};
+
+        int[][] newBoard = EnglishCheckers.sidesPlayer(board, -1);
+        assertArrayEquals(newBoard, boardPlayMove);
+
+        board = new int[][]{
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,-1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0}};
+
+        boardPlayMove = new int[][]{
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,1,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,-1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0}};
+
+        newBoard = EnglishCheckers.sidesPlayer(board, 1);
+        assertArrayEquals(newBoard, boardPlayMove);
+    }
 }

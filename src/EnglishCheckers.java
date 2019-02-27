@@ -81,8 +81,6 @@ public class EnglishCheckers {
 
 	public static int[][] playerDiscs(int[][] board, int player) {
 		int players = countPlayers(board, player);
-//		if(players == 0)
-//			return new int[0][0];
 
 		int[][] positions = new int[players][2];
 		int k = 0;
@@ -330,9 +328,57 @@ public class EnglishCheckers {
 	}
 
 	public static int[][] sidesPlayer(int[][] board, int player) {
+		if(!hasValidMoves(board, player))
+			return board;
 
-		//Add your code here
+		int[][] simpleMoves = getAllBasicMoves(board,player);
+		int[][] complexMoves = getAllBasicJumps(board, player);
 
+		if (complexMoves.length > 0){
+			int random = new Random().nextInt(complexMoves.length);
+			int fromRow = complexMoves[random][0], fromCol = complexMoves[random][1];
+			while(getRestrictedBasicJumps(board,player,fromRow,fromCol).length > 0) {
+				playMove(board, player, complexMoves[random][0], complexMoves[random][1], complexMoves[random][2], complexMoves[random][3]);
+				fromRow = complexMoves[random][0];
+				fromCol = complexMoves[random][1];
+			}
+		}else{
+			ArrayList<int[]> listSide0Moves = new ArrayList<>();
+			ArrayList<int[]> listSide1Moves = new ArrayList<>();
+			ArrayList<int[]> listSide2Moves = new ArrayList<>();
+			ArrayList<int[]> listSide3Moves = new ArrayList<>();
+			for (int[] simpleMove : simpleMoves) {
+				if (simpleMove[3] == 0 || simpleMove[3] == 7)
+					listSide0Moves.add(new int[]{simpleMove[0], simpleMove[1], simpleMove[2], simpleMove[3]});
+				else if (simpleMove[3] == 1 || simpleMove[3] == 6)
+					listSide1Moves.add(new int[]{simpleMove[0], simpleMove[1], simpleMove[2], simpleMove[3]});
+				else if (simpleMove[3] == 2 || simpleMove[3] == 5)
+					listSide2Moves.add(new int[]{simpleMove[0], simpleMove[1], simpleMove[2], simpleMove[3]});
+				else listSide3Moves.add(new int[]{simpleMove[0], simpleMove[1], simpleMove[2], simpleMove[3]});
+			}
+			int[][] side0Moves = new int[listSide0Moves.size()][4];
+			side0Moves = listSide0Moves.toArray(side0Moves);
+			int[][] side1Moves = new int[listSide1Moves.size()][4];
+			side1Moves = listSide1Moves.toArray(side1Moves);
+			int[][] side2Moves = new int[listSide2Moves.size()][4];
+			side2Moves = listSide2Moves.toArray(side2Moves);
+			int[][] side3Moves = new int[listSide3Moves.size()][4];
+			side3Moves = listSide3Moves.toArray(side3Moves);
+
+			if (side0Moves.length > 0){
+				int random = new Random().nextInt(side0Moves.length);
+				playMove(board,player,side0Moves[random][0],side0Moves[random][1],side0Moves[random][2],side0Moves[random][3]);
+			}else if(side1Moves.length > 0){
+				int random = new Random().nextInt(side1Moves.length);
+				playMove(board,player,side1Moves[random][0],side1Moves[random][1],side1Moves[random][2],side1Moves[random][3]);
+			}else if(side2Moves.length > 0){
+				int random = new Random().nextInt(side2Moves.length);
+				playMove(board,player,side2Moves[random][0],side2Moves[random][1],side2Moves[random][2],side2Moves[random][3]);
+			}else{
+				int random = new Random().nextInt(side3Moves.length);
+				playMove(board, player, side3Moves[random][0], side3Moves[random][1], side3Moves[random][2], side3Moves[random][3]);
+			}
+		}
 		return board;
 	}
 
